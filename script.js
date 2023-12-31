@@ -3,6 +3,7 @@ const myLibrary = [];
 const IO = document.querySelector(".io");
 const bookList = document.querySelector(".book-list");
 const bod = document.querySelectorAll("body");
+const closeForm = document.getElementById("closeForm");
 const titleInput = document.querySelector("#titleIO");
 const authorInput = document.querySelector("#authorIO");
 const numberInput = document.querySelector("#numberIO");
@@ -13,7 +14,13 @@ const btnRemove = [];
 
 btnInput.addEventListener("click", () => addBookToLibrary());
 btnNew.addEventListener("click", () => addBook());
-
+closeForm.addEventListener("click", function() {
+	IO.style.display ="none";
+	const myElement = document.body;
+	for (const child of myElement.children) {
+		child.style.filter = "blur(0px)";
+	}
+});
 
 
 function Book(title, author, page, status) {
@@ -26,24 +33,27 @@ function Book(title, author, page, status) {
 
 function addBookToLibrary() {
     // do stuff here
-
     let temptitle = titleInput.value;
     let tempauthor = authorInput.value;
     let temppage = numberInput.value;
-
 	let tempstatus = statusInput.value;
-
 	
     myLibrary.push(new Book(temptitle, tempauthor, temppage, tempstatus));
 	IO.style.display = "none";
+
+
 	
 	const myElement = document.body;
 	for (const child of myElement.children) {
 		child.style.filter = "blur(0px)";
 	}
 	
-	bookList.style.display = "grid";
-	let num = myLibrary.length;
+	addCard();
+	
+}
+
+function addCard(){
+	let num = myLibrary.length-1;
 	let div = document.createElement("div");
 	div.className = "book-card";
 	div.setAttribute("id", "card-"+num)
@@ -61,7 +71,7 @@ function addBookToLibrary() {
 	btndiv.className = "btnCard";
 	
 	let btn = document.createElement("button");
-	let  btnImg = document.createElement("img");
+	let btnImg = document.createElement("img");
 	btnImg.src = "img/close_FILL0_wght400_GRAD0_opsz24.svg";
 	btn.appendChild(btnImg);
 	btn.setAttribute("id", "btn"+num);
@@ -71,9 +81,7 @@ function addBookToLibrary() {
 
 	bookList.appendChild(div);
 
-	console.log("#btn"+num)
 	let btnR = document.getElementById("btn"+num);
-	// btnR.addEventListener('click',removeBook );
 	
 	btnRemove.push(btnR);
 	btnRemove[btnRemove.length-1].addEventListener('click',removeBook );
@@ -92,14 +100,20 @@ function addBook(){
 }
 
 const removeBook =  function (e){
-	let temp = e.target.parentNode;
-	console.log(e.target.parentNode.id);
-	// let parentCard = btnRemove.parentNode;
+	console.log(myLibrary.length)
+	let temp = e.target.parentNode.id;
+	let index = parseInt(temp.charAt(temp.length -1));
 
-	// let cards = IO.childNodes;
-	// for (let card in cards){
-	// 	if(card.id =="7"){
-	// 		console.log("hey");
-	// 	}
-	// }
+	myLibrary.splice(index, 1);
+	console.log(myLibrary.length)
+
+	let bookList = document.querySelector(".book-list");
+	let list = document.querySelectorAll(".book-list > *");
+
+	list.forEach(function(child){ 
+		if(child.id == "card-"+(index)){
+			bookList.removeChild(child);
+		}
+	});
+
 }
